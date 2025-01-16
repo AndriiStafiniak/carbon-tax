@@ -23,6 +23,7 @@ import { Leva } from 'leva';
 import { AnimatedBackground } from './AnimatedBackground';
 import Lights from './Lights';
 import { gsap } from 'gsap';
+import { River } from './models3D/River';
 
 export function App() {
   const [finishedLogos, setFinishedLogos] = useState([]);
@@ -52,7 +53,8 @@ export function App() {
 
           <AnimatedBackground />
           {/* <OrbitControls makeDefault /> */}
-          <Leva hidden />
+          {/* <Leva hidden /> */}
+          <River/>
           <CarbonText />
           <Dolar />
           <WindMil />
