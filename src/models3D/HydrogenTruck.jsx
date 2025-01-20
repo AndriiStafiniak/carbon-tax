@@ -33,10 +33,10 @@ export function HydrogenTruck() {
     });
 
     // Leva controls
-    const { positionX, positionY, positionZ, rotationY } = useControls("Auta", {
-        positionX: { value: 1.1, min: -5, max: 5, step: 0.1 },
-        positionY: { value: -0.517, min: -5, max: 5, step: 0.01},
-        positionZ: { value:2.1, min: -5, max: 5, step: 0.1 },
+    const { positionX, positionY, positionZ, rotationY } = useControls("HydrogenTruck",{
+        positionX: { value: 1.1, min: -5, max: 5, step: 0.001 },
+        positionY: { value: -0.527, min: -5, max: 5, step: 0.001},
+        positionZ: { value:2.1, min: -5, max: 5, step: 0.001 },
         rotationY: { value: -0.5, min: -2, max: Math.PI * 2, step: 0.1 },
     });
 

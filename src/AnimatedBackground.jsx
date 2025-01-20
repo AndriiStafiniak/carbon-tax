@@ -2,6 +2,7 @@ import { useFrame } from "@react-three/fiber";
 import { useRef } from "react";
 import * as THREE from 'three';
 
+
 export function AnimatedBackground() {
     const materialRef = useRef();
   
@@ -23,6 +24,8 @@ export function AnimatedBackground() {
         color1: { value: new THREE.Color('#eeeeee') },
         color2: { value: new THREE.Color('#575757') },
         color3: { value: new THREE.Color('#A6A6A6') },
+        color4: { value: new THREE.Color('#ffffff') },
+        color5: { value: new THREE.Color('#ffffff') },
         
       }}
       vertexShader={`
@@ -64,4 +67,3 @@ export function AnimatedBackground() {
   </mesh>
     );
   }
-  
