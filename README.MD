@@ -1,6 +1,12 @@
 # Animated 3D Logo
 
+## Preview
+
+Below is a screenshot of the animated logo:
+
 ![Animated 3D Logo Preview](/readmePS.png)
+
+## Project Link
 
 [View the project here](https://carbon-tax-five.vercel.app/)
 
@@ -17,9 +23,3 @@ This project showcases an animated 3D logo created using React and Three.js. The
 - `react`
 - `three`
 - Additional dependencies as needed for animation and functionality.
-
-## Preview
-
-Below is a screenshot of the animated logo:
-
-## Project Link

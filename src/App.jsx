@@ -84,6 +84,7 @@ export function App(scene) {
           backgroundIntensity={0.7}
           resolution={256}
         />
+        <Leva hidden={true}/>
         <Float
           speed={1.1}
           floatIntensity={1.1}
@@ -103,7 +104,6 @@ export function App(scene) {
             touch-action="auto"
           >
             {/* <OrbitControls makeDefault/> */}
-            {/* <Leva hidden={false}/> */}
             <Float
               speed={1.1}
               floatIntensity={1.1}
