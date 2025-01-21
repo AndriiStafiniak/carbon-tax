@@ -20,36 +20,39 @@ import { Hala } from './models3D/Hala';
 import { HydrogenHub } from './models3D/HydrogenHub';
 import { HydrogenTruck } from './models3D/HydrogenTruck';
 import { Leva } from 'leva';
-import { AnimatedBackground } from './AnimatedBackground';
+
 import Lights from './Lights';
 import { gsap } from 'gsap';
 import { River } from './models3D/River';
 import { Perf } from 'r3f-perf';
+import  { AnimatedBackground} from './AnimatedBackground';
+import { Particles } from './models3D/Particles';
 
-export function App() {
+export function App(scene) {
   const [finishedLogos, setFinishedLogos] = useState([]);
-
+  
   const handleLogoFinished = (data) => {
     setFinishedLogos((prev) => [...prev, data]);
   };
-
+  
   return (
 <Canvas
 camera={{ position: [0, 0.5, 6] }}
 shadows
 gl={{ antialias: true }}
+style={{ background: '#000000' }}
 >
-<AnimatedBackground/>
+{/* <AnimatedBackground/> */}
   {/* Panel wydajności */}
   <Perf position="top-left" />
-
+    
   {/* Environment z wyłączonym tłem */}
   <Environment
     preset="night"
     backgroundBlurriness={0.5}
     backgroundIntensity={0.7} // Dostosowujemy intensywność oświetlenia
   />
-
+  <Particles count={1000} />
   {/* Kontrolery i elementy */}
   <PresentationControls
     global
@@ -92,7 +95,7 @@ gl={{ antialias: true }}
         position={[0, 0, 0]}
         rotation={[0, -Math.PI / 2, 0]}
         label="Programy"
-        link="https://carbonid.org/programy/"
+        link="https:/teamid.f.pl/"
         onAnimationFinish={handleLogoFinished}
         textColor="#ffffff"
         textFontSize={0.16}
@@ -110,7 +113,7 @@ gl={{ antialias: true }}
         position={[0, 0, -0.2]}
         rotation={[0, Math.PI / 2, 0]}
         label="Finansowanie"
-        link="https://carbonid.org/finansowanie/"
+        link="https:/teamid.f.pl/finansowanie"
         onAnimationFinish={handleLogoFinished}
         textColor="#ffffff"
         textFontSize={0.16}
@@ -128,7 +131,7 @@ gl={{ antialias: true }}
         position={[0, 0, -0.2]}
         rotation={[Math.PI, -Math.PI / 2, 0]}
         label="Technologie"
-        link="https://carbonid.org/bse/"
+        link="https:/teamid.f.pl/technologie"
         onAnimationFinish={handleLogoFinished}
         textColor="#ffffff"
         textFontSize={0.16}
@@ -145,8 +148,8 @@ gl={{ antialias: true }}
         finalRotationZ={Math.PI * 0.5}
         position={[0, 0, 0]}
         rotation={[Math.PI, Math.PI / 2, 0]}
-        label="Grupa Green Hub Pl"
-        link="https://hubid.org/o-nas/"
+        label="Green Hub PL"
+        link="https://hubid.org/"
         onAnimationFinish={handleLogoFinished}
         textColor="#ffffff"
         textFontSize={0.16}

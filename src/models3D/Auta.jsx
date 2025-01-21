@@ -8,7 +8,6 @@ export function Auta() {
     const [isVisible, setIsVisible] = useState(false);
     const modelRef = useRef();
     const animation = useAnimations(animations, scene);
-    console.log(animation);
 
     useEffect(() => {
         // Poprawiony dostęp do akcji animacji
