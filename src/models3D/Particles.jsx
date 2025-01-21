@@ -3,7 +3,7 @@ import { useMemo, useRef } from 'react';
 import { useFrame, useLoader } from '@react-three/fiber';
 import { useControls } from 'leva';
 
-export function Particles({ count = 1000, texturePath = '/textures/star_04.png'}) {
+export function Particles({ count = 500, texturePath = '/textures/star_04.png'}) {
   const mesh = useRef();
 
   // Ładowanie tekstury

@@ -25,6 +25,18 @@ export function Hala({ externalHover = false }) {
         return () => clearTimeout(timer);
     }, []);
 
+    useEffect(() => {
+        scene.traverse((obj) => {
+            if (obj.isMesh) {
+                obj.material.transparent = false;
+                obj.material.opacity = 1;
+                obj.material.needsUpdate = true;
+                obj.castShadow = true;
+                obj.receiveShadow = true;
+            }
+        });
+    }, [scene]);
+
     const { scale, position, rotation } = useSpring({
         scale: isVisible ? 0.30 : 0,
         position: [

@@ -40,9 +40,9 @@ export function Dolar({ externalHover = false }) {
         config: { tension: 170, friction: 26 },
     });
 
-    useFrame(()=> {
+    useFrame((state, delta) => {
         if(modelRef.current){
-            modelRef.current.rotation.y += 0.01;
+            modelRef.current.rotation.y += delta * 0.5;
         }
     })
 

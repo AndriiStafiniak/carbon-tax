@@ -21,8 +21,11 @@ export function HydrogenTruck({ externalHover = false }) {
     useEffect(() => {
         scene.traverse((obj) => {
             if (obj.isMesh) {
-                obj.castShadow = true; // Enable casting shadows
-                obj.receiveShadow = true; // Enable receiving shadows
+                obj.material.transparent = false;
+                obj.material.opacity = 1;
+                obj.material.needsUpdate = true;
+                obj.castShadow = true;
+                obj.receiveShadow = true;
             }
         });
     }, [scene]);

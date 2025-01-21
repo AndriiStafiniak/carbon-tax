@@ -20,12 +20,15 @@ export function Auta({ externalHover = false }) {
     
     const action = animation.actions["Car.Low.003Action.001"];
     useEffect(() => {
-        // Poprawiony dostęp do akcji animacji
         if (action) {
             action.play();
-        } else {
-            console.error("Nie znaleziono akcji: Car.Low.003Action.001");
         }
+        return () => {
+            if (action) {
+                action.stop();
+                action.reset();
+            }
+        };
     }, [animation.actions]);
 
    useEffect(() => {
@@ -46,8 +49,11 @@ export function Auta({ externalHover = false }) {
     useEffect(() => {
         scene.traverse((obj) => {
             if (obj.isMesh) {
-                obj.castShadow = true; // Enable casting shadows
-                obj.receiveShadow = true; // Enable receiving shadows
+                obj.material.transparent = false;
+                obj.material.opacity = 1;
+                obj.material.needsUpdate = true;
+                obj.castShadow = true;
+                obj.receiveShadow = true;
             }
         });
     }, [scene]);

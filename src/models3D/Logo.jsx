@@ -1,9 +1,9 @@
 import { useGLTF } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, memo } from "react";
 import * as THREE from 'three';
 
-export function Logo({ color, finalY, finalX, finalZ, finalRotationZ, label, link, onAnimationFinish, textColor, textFontSize, textRotation, textOffset, ...props }) {
+export const Logo = memo(function Logo({ color, finalY, finalX, finalZ, finalRotationZ, label, link, onAnimationFinish, textColor, textFontSize, textRotation, textOffset, ...props }) {
     const gltf = useGLTF('./models/one_part_logo.glb');
     const logoRef = useRef();
     const [startAnimation, setStartAnimation] = useState(false);
@@ -68,4 +68,4 @@ export function Logo({ color, finalY, finalX, finalZ, finalRotationZ, label, lin
     });
  
     return <group ref={logoRef} {...props} />;
-}
+});
