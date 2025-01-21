@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Canvas } from '@react-three/fiber';
 import {
@@ -28,8 +27,14 @@ import { Perf } from 'r3f-perf';
 import  { AnimatedBackground} from './AnimatedBackground';
 import { Particles } from './models3D/Particles';
 
+
 export function App(scene) {
   const [finishedLogos, setFinishedLogos] = useState([]);
+  const [hubHovered, setHubHovered] = useState(false);
+  const [firstLogoHovered, setFirstLogoHovered] = useState(false);
+  const [secondLogoHovered, setSecondLogoHovered] = useState(false);
+  const [thirdLogoHovered, setThirdLogoHovered] = useState(false);
+  const [fourthLogoHovered, setFourthLogoHovered] = useState(false);
   
   const handleLogoFinished = (data) => {
     setFinishedLogos((prev) => [...prev, data]);
@@ -70,17 +75,21 @@ style={{ background: '#000000' }}
       floatingRange={[-0.3, 0.3]}
       rotationIntensity={0.1}
     >
-      <OrbitControls makeDefault />
+      {/* <OrbitControls makeDefault /> */}
       
       {/* Twoje modele */}
       <CarbonText />
-      <Dolar />
+      <Dolar externalHover={secondLogoHovered} />
       <WindMil />
-      <Technologies />
-      <Auta />
-      <Hala />
-      <HydrogenHub />
-      <HydrogenTruck castShadow />
+      <Technologies externalHover={secondLogoHovered} />
+      <Auta externalHover={thirdLogoHovered} />
+      <Hala externalHover={fourthLogoHovered} />
+      <HydrogenHub externalHover={firstLogoHovered} />
+      <HydrogenTruck 
+        castShadow 
+        position={[0, hubHovered ? 0.5 : 0, 0]}
+        externalHover={thirdLogoHovered}
+      />
       <Lights />
 
       {/* Logotypy */}
@@ -101,6 +110,14 @@ style={{ background: '#000000' }}
         textFontSize={0.16}
         textRotation={[0, 0, 0]}
         textOffset={[-0.7, -0.2, 1.5]}
+        onPointerEnter={() => {
+          setHubHovered(true);
+          setFirstLogoHovered(true);
+        }}
+        onPointerLeave={() => {
+          setHubHovered(false);
+          setFirstLogoHovered(false);
+        }}
       />
       <Logo
         reciveShadow
@@ -119,6 +136,8 @@ style={{ background: '#000000' }}
         textFontSize={0.16}
         textRotation={[0, 0, 0]}
         textOffset={[0.7, -0.3, 1.5]}
+        onPointerEnter={() => setSecondLogoHovered(true)}
+        onPointerLeave={() => setSecondLogoHovered(false)}
       />
       <Logo
         reciveShadow
@@ -137,6 +156,8 @@ style={{ background: '#000000' }}
         textFontSize={0.16}
         textRotation={[0, 0, 0]}
         textOffset={[-0.8, -0.3, 0]}
+        onPointerEnter={() => setThirdLogoHovered(true)}
+        onPointerLeave={() => setThirdLogoHovered(false)}
       />
       <Logo
         reciveShadow
@@ -155,6 +176,8 @@ style={{ background: '#000000' }}
         textFontSize={0.16}
         textRotation={[0, 0, 0]}
         textOffset={[0.5, -0.15, 0]}
+        onPointerEnter={() => setFourthLogoHovered(true)}
+        onPointerLeave={() => setFourthLogoHovered(false)}
       />
 
       {/* Animowane logotypy po zakończeniu */}
@@ -172,10 +195,30 @@ style={{ background: '#000000' }}
           onPointerOver={(e) => {
             gsap.to(e.object.scale, { duration: 0.3, x: 1.3, y: 1.3, z: 1.3 });
             document.body.style.cursor = 'pointer';
+            if (item.label === "Programy") {
+              setHubHovered(true);
+              setFirstLogoHovered(true);
+            } else if (item.label === "Finansowanie") {
+              setSecondLogoHovered(true);
+            } else if (item.label === "Technologie") {
+              setThirdLogoHovered(true);
+            } else if (item.label === "Green Hub PL") {
+              setFourthLogoHovered(true);
+            }
           }}
           onPointerOut={(e) => {
             gsap.to(e.object.scale, { duration: 0.3, x: 1, y: 1, z: 1 });
             document.body.style.cursor = 'auto';
+            if (item.label === "Programy") {
+              setHubHovered(false);
+              setFirstLogoHovered(false);
+            } else if (item.label === "Finansowanie") {
+              setSecondLogoHovered(false);
+            } else if (item.label === "Technologie") {
+              setThirdLogoHovered(false);
+            } else if (item.label === "Green Hub PL") {
+              setFourthLogoHovered(false);
+            }
           }}
           onClick={() => window.open(item.link, '_blank')}
         >

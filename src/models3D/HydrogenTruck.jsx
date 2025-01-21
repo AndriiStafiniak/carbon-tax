@@ -3,10 +3,19 @@ import { useEffect, useRef, useState } from "react";
 import { useControls } from "leva";
 import { useSpring, animated } from "@react-spring/three";
 
-export function HydrogenTruck() {
+export function HydrogenTruck({ externalHover = false }) {
     const { scene } = useGLTF("./models/wodorowy_tir.glb");
     const [isVisible, setIsVisible] = useState(false);
+    const [isHovered, setIsHovered] = useState(false);
     const modelRef = useRef();
+
+    // Leva controls - Move this before spring animation
+    const { positionX, positionY, positionZ, rotationY } = useControls("HydrogenTruck",{
+        positionX: { value: 1.1, min: -5, max: 5, step: 0.001 },
+        positionY: { value: -0.527, min: -5, max: 5, step: 0.001},
+        positionZ: { value:2.1, min: -5, max: 5, step: 0.001 },
+        rotationY: { value: -0.5, min: -2, max: Math.PI * 2, step: 0.1 },
+    });
 
     // Enable castShadow for all meshes in the model
     useEffect(() => {
@@ -27,17 +36,19 @@ export function HydrogenTruck() {
     }, []);
 
     // Spring animation for scaling
-    const { scale } = useSpring({
-        scale: isVisible ? 0.3 : 0, // Scale up when visible
-        config: { tension: 170, friction: 26 }, // Adjust animation smoothness
-    });
-
-    // Leva controls
-    const { positionX, positionY, positionZ, rotationY } = useControls("HydrogenTruck",{
-        positionX: { value: 1.1, min: -5, max: 5, step: 0.001 },
-        positionY: { value: -0.527, min: -5, max: 5, step: 0.001},
-        positionZ: { value:2.1, min: -5, max: 5, step: 0.001 },
-        rotationY: { value: -0.5, min: -2, max: Math.PI * 2, step: 0.1 },
+    const { scale, position, rotation } = useSpring({
+        scale: isVisible ? 0.3 : 0,
+        position: [
+            positionX,
+            (isHovered || externalHover) ? positionY + 0.2 : positionY,
+            positionZ
+        ],
+        rotation: [
+            0,
+            (isHovered || externalHover) ? rotationY + Math.PI * 0.1 : rotationY,
+            0
+        ],
+        config: { tension: 170, friction: 26 },
     });
 
     return (
@@ -48,8 +59,10 @@ export function HydrogenTruck() {
                 visible={isVisible}
                 object={scene}
                 scale={scale}
-                position={[positionX, positionY, positionZ]} // Dynamic position
-                rotation-y={rotationY} // Dynamic rotation
+                position={position}
+                rotation={rotation}
+                onPointerEnter={() => setIsHovered(true)}
+                onPointerLeave={() => setIsHovered(false)}
             />
         </>
     );

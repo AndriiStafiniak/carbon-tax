@@ -2,9 +2,11 @@ import { useGLTF } from "@react-three/drei";
 import { useEffect, useRef, useState } from "react";
 import {useControls} from "leva";
 import { useSpring, animated } from "@react-spring/three";
-export function Technologies() {
+
+export function Technologies({ externalHover = false }) {
     const { scene } = useGLTF("./models/Technologie.glb");
     const [isVisible, setIsVisible] = useState(false);
+    const [isHovered, setIsHovered] = useState(false);
     const modelRef = useRef();
 
     // Timer do wyświetlenia modelu po 3 sekundach
@@ -22,22 +24,33 @@ export function Technologies() {
         positionZ: { value: 2.1, min: -5, max: 5, step: 0.1 },
         rotationY: { value: 2.2, min: 0, max: Math.PI * 2, step: 0.1 },
     });
-    const { scale } = useSpring({
-        scale: isVisible ? 0.3 : 0, // Scale up when visible
-        config: { tension: 170, friction: 26 }, // Adjust animation smoothness
-      });
+
+    const { scale, position, rotation } = useSpring({
+        scale: isVisible ? 0.3 : 0,
+        position: [
+            positionX,
+            (isHovered || externalHover) ? positionY + 0.2 : positionY,
+            positionZ
+        ],
+        rotation: [
+            0,
+            (isHovered || externalHover) ? rotationY + Math.PI * 0.1 : rotationY,
+            0
+        ],
+        config: { tension: 170, friction: 26 },
+    });
+
     return (
-        <>
-            {/* Model */}
-            <animated.primitive
-                castShadow
-                ref={modelRef}
-                visible={isVisible}
-                object={scene}
-                scale={scale}
-                position={[positionX, positionY, positionZ]} // Pozycja dynamiczna
-                rotation-y={rotationY} // Rotacja dynamiczna
-            />
-        </>
+        <animated.primitive
+            castShadow
+            ref={modelRef}
+            visible={isVisible}
+            object={scene}
+            scale={scale}
+            position={position}
+            rotation={rotation}
+            onPointerEnter={() => setIsHovered(true)}
+            onPointerLeave={() => setIsHovered(false)}
+        />
     );
 }

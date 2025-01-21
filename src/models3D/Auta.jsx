@@ -3,15 +3,24 @@ import { useEffect, useRef, useState } from "react";
 import { useControls } from "leva";
 import { useSpring, animated } from "@react-spring/three";
 
-export function Auta() {
+export function Auta({ externalHover = false }) {
     const { scene, animations } = useGLTF("./models/Auta.glb");
     const [isVisible, setIsVisible] = useState(false);
+    const [isHovered, setIsHovered] = useState(false);
     const modelRef = useRef();
     const animation = useAnimations(animations, scene);
 
+    // Kontrolki Leva - Move this before spring animation
+    const { positionX, positionY, positionZ, rotationY } = useControls("Auta",{
+        positionX: { value: 0.44, min: -5, max: 5, step: 0.001},
+        positionY: { value: -0.515, min: -5, max: 5, step: 0.001},
+        positionZ: { value: 2.08, min: -5, max: 5, step: 0.001 },
+        rotationY: { value: 0, min: 0, max: Math.PI * 2, step: 0.01 },
+    });
+    
+    const action = animation.actions["Car.Low.003Action.001"];
     useEffect(() => {
         // Poprawiony dostęp do akcji animacji
-        const action = animation.actions["Car.Low.003Action.001"];
         if (action) {
             action.play();
         } else {
@@ -19,6 +28,13 @@ export function Auta() {
         }
     }, [animation.actions]);
 
+   useEffect(() => {
+    if (isHovered) {
+        action.stop();
+    } else {
+        action.play();
+    }
+   }, [isHovered]);
     // Timer do wyświetlenia modelu po 3 sekundach
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -37,17 +53,19 @@ export function Auta() {
     }, [scene]);
 
     // Animations with react-spring
-    const { scale } = useSpring({
-        scale: isVisible ? 0.2 : 0, // Scale up when visible
-        config: { tension: 170, friction: 26 }, // Adjust animation smoothness
-    });
-
-    // Kontrolki Leva
-    const { positionX, positionY, positionZ, rotationY } = useControls("Auta",{
-        positionX: { value: 0.44, min: -5, max: 5, step: 0.001},
-        positionY: { value: -0.515, min: -5, max: 5, step: 0.001},
-        positionZ: { value: 2.08, min: -5, max: 5, step: 0.001 },
-        rotationY: { value: 0, min: 0, max: Math.PI * 2, step: 0.01 },
+    const { scale, position, rotation } = useSpring({
+        scale: isVisible ? 0.2 : 0,
+        position: [
+            positionX,
+            (isHovered || externalHover) ? positionY + 0.2 : positionY,
+            positionZ
+        ],
+        rotation: [
+            0,
+            (isHovered || externalHover) ? rotationY + Math.PI * 0.1 : rotationY,
+            0
+        ],
+        config: { tension: 170, friction: 26 },
     });
 
     return (
@@ -58,9 +76,12 @@ export function Auta() {
                 visible={isVisible}
                 object={scene}
                 scale={scale}
-                position={[positionX, positionY, positionZ]} // Pozycja dynamiczna
-                rotation-y={rotationY} // Rotacja dynamiczna
+                position={position}
+                rotation={rotation}
+                onPointerEnter={() => setIsHovered(true)}
+                onPointerLeave={() => setIsHovered(false)}
             />
         </>
     );
 }
+    
