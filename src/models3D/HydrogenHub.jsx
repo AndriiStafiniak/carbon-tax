@@ -4,7 +4,7 @@ import {useControls} from "leva";
 import { useSpring, animated } from "@react-spring/three";
 
 export function HydrogenHub({ externalHover = false }) {
-    const { scene } = useGLTF("./models/wodorowy_hub.glb", true);
+    const { scene, animations } = useGLTF("./models/wodorowy_hub.glb");
     const [isVisible, setIsVisible] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
     const modelRef = useRef();
@@ -34,6 +34,16 @@ export function HydrogenHub({ externalHover = false }) {
                 obj.material.needsUpdate = true; // Update material
                 obj.castShadow = true;
                 obj.receiveShadow = true;
+            }
+        });
+    }, [scene]);
+
+    useEffect(() => {
+        // Ensure geometries are valid
+        scene.traverse((obj) => {
+            if (obj.isMesh) {
+                obj.geometry.computeBoundingSphere();
+                obj.geometry.computeBoundingBox();
             }
         });
     }, [scene]);
@@ -68,6 +78,13 @@ export function HydrogenHub({ externalHover = false }) {
                 rotation={rotation}
                 onPointerEnter={() => setIsHovered(true)}
                 onPointerLeave={() => setIsHovered(false)}
+                onClick={() => window.open('https://teamid.f.pl/', '_blank', 'noopener,noreferrer')}
+                onPointerOver={() => {
+                    document.body.style.cursor = 'pointer';
+                }}
+                onPointerOut={() => {
+                    document.body.style.cursor = 'auto';
+                }}
                 frustumCulled
             />
         </>

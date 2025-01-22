@@ -67,5 +67,22 @@ export const Logo = memo(function Logo({ color, finalY, finalX, finalZ, finalRot
         }
     });
  
-    return <group ref={logoRef} {...props} />;
+    return <group ref={logoRef} {...props}>
+        <mesh
+            position={[0, 0, 0]}
+            onClick={() => {
+                if (link) {
+                    // Jeśli link zaczyna się od "http" otwieramy w nowej karcie
+                    if (link.startsWith('http')) {
+                        window.open(link, '_blank', 'noopener,noreferrer');
+                    } else {
+                        // W przeciwnym razie przekierowujemy w tej samej karcie
+                        window.location.href = link;
+                    }
+                }
+            }}
+        >
+            {/* ... existing mesh content ... */}
+        </mesh>
+    </group>;
 });
