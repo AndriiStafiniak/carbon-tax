@@ -1,4 +1,4 @@
-import { useState, Suspense } from 'react';
+import { useState, Suspense, memo } from 'react';
 import { Canvas } from '@react-three/fiber';
 import {
   Environment,
@@ -22,12 +22,12 @@ import { Hala } from './models3D/Hala';
 import { HydrogenHub } from './models3D/HydrogenHub';
 import { HydrogenTruck } from './models3D/HydrogenTruck';
 import { Leva } from 'leva';
-
+import { Particles } from './models3D/Particles';
 import Lights from './Lights';
 import { gsap } from 'gsap';
 import { River } from './models3D/River';
 import { Perf } from 'r3f-perf';
-import { Particles } from './models3D/Particles';
+
 
 const isDev = process.env.NODE_ENV === 'development';
 
@@ -91,7 +91,9 @@ export function App(scene) {
           floatingRange={[-0.3, 0.3]}
           rotationIntensity={0.1}
         >
-          <Particles count={1000} />
+          <Suspense fallback={null}>
+            <Particles count={1000} />
+          </Suspense>
           {/* Kontrolery i elementy */}
           <PresentationControls
             global
@@ -139,7 +141,7 @@ export function App(scene) {
                 position={[0, 0, 0]}
                 rotation={[0, -Math.PI / 2, 0]}
                 label="Programy"
-                link="https:/teamid.f.pl/"
+                link="https://teamid.f.pl/"
                 onAnimationFinish={handleLogoFinished}
                 textColor="#ffffff"
                 textFontSize={0.16}
@@ -165,7 +167,7 @@ export function App(scene) {
                 position={[0, 0, -0.2]}
                 rotation={[0, Math.PI / 2, 0]}
                 label="Finansowanie"
-                link="https:/teamid.f.pl/finansowanie"
+                link="https://teamid.f.pl/finansowanie"
                 onAnimationFinish={handleLogoFinished}
                 textColor="#ffffff"
                 textFontSize={0.16}
@@ -185,7 +187,7 @@ export function App(scene) {
                 position={[0, 0, -0.2]}
                 rotation={[Math.PI, -Math.PI / 2, 0]}
                 label="Technologie"
-                link="https:/teamid.f.pl/technologie"
+                link="https://teamid.f.pl/technologie"
                 onAnimationFinish={handleLogoFinished}
                 textColor="#ffffff"
                 textFontSize={0.16}
@@ -255,7 +257,7 @@ export function App(scene) {
                       setFourthLogoHovered(false);
                     }
                   }}
-                  onClick={() => window.open(item.link, '_blank')}
+                  onClick={() => window.open(item.link, '_blank', 'noopener,noreferrer')}
                   frustumCulled
                   maxWidth={2}
                   textRendering="optimizeLegibility"

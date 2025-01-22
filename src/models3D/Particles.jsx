@@ -1,61 +1,61 @@
 import * as THREE from 'three';
 import { useMemo, useRef } from 'react';
-import { useFrame } from '@react-three/fiber';
+import { useFrame, useLoader } from '@react-three/fiber';
+import { useControls } from 'leva';
 
-export function Particles({ count = 1000 }) {
+export function Particles({ count = 500, texturePath = '/textures/star_04.png'}) {
   const mesh = useRef();
   const dummy = useMemo(() => new THREE.Object3D(), []);
 
+  // Ładowanie tekstury
+  const texture = useLoader(THREE.TextureLoader, texturePath);
+
   // Create particles with memoized attributes
   const particles = useMemo(() => {
-    const temp = [];
+    const positions = new Float32Array(count * 3);
     for (let i = 0; i < count; i++) {
-      const position = new THREE.Vector3(
-        (Math.random() - 0.5) * 15,
-        Math.random() * 15,
-        (Math.random() - 0.5) * 15
+      positions.set(
+        [
+          (Math.random() - 0.5) * 10, // x
+          (Math.random() - 0.5) * 10, // y
+          (Math.random() - 0.5) * 10, // z
+        ],
+        i * 3
       );
-      const speed = 0.01 + Math.random() / 200;
-      temp.push({ position, speed });
     }
-    return temp;
+    return positions;
   }, [count]);
 
-  // Create instanced buffer geometry
-  const geometry = useMemo(() => {
-    const geo = new THREE.BufferGeometry();
-    const positions = new Float32Array(count * 3);
-    const scales = new Float32Array(count);
-    
-    particles.forEach((particle, i) => {
-      positions[i * 3] = particle.position.x;
-      positions[i * 3 + 1] = particle.position.y;
-      positions[i * 3 + 2] = particle.position.z;
-      scales[i] = Math.random() * 0.05 + 0.01;
-    });
-    
-    geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    geo.setAttribute('scale', new THREE.BufferAttribute(scales, 1));
-    return geo;
-  }, [count, particles]);
+  useFrame(() => {
+    if (mesh.current) {
+      mesh.current.rotation.y += 0.0007;
+    }
+  });
 
-  useFrame((state) => {
-    particles.forEach((particle, i) => {
-      particle.position.y -= particle.speed;
-      if (particle.position.y < -2) {
-        particle.position.y = 15;
-      }
-      dummy.position.copy(particle.position);
-      dummy.updateMatrix();
-      mesh.current.setMatrixAt(i, dummy.matrix);
-    });
-    mesh.current.instanceMatrix.needsUpdate = true;
+  const { alphaTest, size, opacity } = useControls('Particles', {
+    alphaTest: { value:0.30, min: 0, max: 1, step: 0.01 },
+    size: { value: 0.25, min: 0.01, max: 1, step: 0.01 },
+    opacity: { value:0.79, min: 0, max: 1, step: 0.01 },
   });
 
   return (
-    <instancedMesh ref={mesh} args={[null, null, count]}>
-      <sphereGeometry args={[0.02, 8, 8]} />
-      <meshBasicMaterial color="#ffffff" transparent opacity={0.6} />
-    </instancedMesh>
+    <points ref={mesh}>
+      <bufferGeometry>
+        <bufferAttribute
+          attach="attributes-position"
+          array={particles}
+          itemSize={4}
+          count={count}
+        />
+      </bufferGeometry>
+      <pointsMaterial
+        map={texture} // Przypisanie tekstury
+        transparent={true} // Włącz przezroczystość
+        alphaTest={alphaTest} // Dynamiczne sterowanie alphaTest
+        size={size} // Dynamiczne sterowanie size
+        sizeAttenuation // Dostosowanie rozmiaru w zależności od dystansu
+        opacity={opacity} // Dynamiczne sterowanie opacity
+      />
+    </points>
   );
 }
