@@ -12,7 +12,7 @@ import {
 } from '@react-three/drei';
 
 import { Logo } from './models3D/Logo';
-import { CarbonText } from './models3D/CarbonText';
+// import { CarbonText } from './models3D/CarbonText';
 import { Dolar } from './models3D/Dolar';
 import { WindMil } from './models3D/WindMil';
 
@@ -27,6 +27,7 @@ import Lights from './Lights';
 import { gsap } from 'gsap';
 import { River } from './models3D/River';
 import { Perf } from 'r3f-perf';
+import { Text3D } from './models3D/Text3D';
 
 
 const isDev = process.env.NODE_ENV === 'development';
@@ -115,7 +116,10 @@ export function App(scene) {
               {/* <OrbitControls makeDefault /> */}
               
               {/* Twoje modele */}
-              <CarbonText />
+              {/* <CarbonText /> */}
+              <Suspense fallback={null}>
+                <Text3D />
+              </Suspense>
               <Dolar externalHover={secondLogoHovered} />
               <WindMil />
               <Technologies externalHover={secondLogoHovered} />
