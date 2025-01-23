@@ -3,12 +3,13 @@ import { Canvas } from '@react-three/fiber';
 import {
   Environment,
   Float,
+  OrbitControls,
   PresentationControls,
   Text,
   useGLTF,
 } from '@react-three/drei';
 import { Logo } from './models3D/Logo';
-import { Dolar } from './models3D/Dolar';
+
 import { WindMil } from './models3D/WindMil';
 import { Technologies } from './models3D/Technologies';
 import { Auta } from './models3D/Auta';
@@ -25,8 +26,55 @@ import { CustomLoader, SimpleLoader } from './components/Loader';
 import { ModelWithClick } from './components/ModelWithClick';
 import { OrientationMessage } from './components/OrientationMessage';
 import { appStyles } from './components/styles';
+import { Euro } from './models3D/Euro';
+import { Fotowolt } from './models3D/Fotowolt';
+import { useSpring, animated } from '@react-spring/three';
 
 const isDev = process.env.NODE_ENV === 'development';
+
+// Możemy stworzyć komponent dla spójnego stylowania napisów
+const Label3D = ({ text, position, rotation = [0, 0, 0], color = "#ffffff" }) => {
+  const [hovered, setHovered] = useState(false);
+  const { scale } = useSpring({
+    scale: hovered ? 1.2 : 1,
+    config: { tension: 300, friction: 10 }
+  });
+
+  return (
+    <animated.group scale={scale}>
+      <Text3D
+        font="/fonts/Roboto_Regular.json"
+        size={0.2}
+        height={0.05}
+        curveSegments={12}
+        bevelEnabled
+        bevelThickness={0.01}
+        bevelSize={0.001}
+        bevelOffset={0}
+        bevelSegments={5}
+        position={position}
+        rotation={rotation}
+        onPointerOver={() => {
+          setHovered(true);
+          document.body.style.cursor = 'pointer';
+        }}
+        onPointerOut={() => {
+          setHovered(false);
+          document.body.style.cursor = 'auto';
+        }}
+      >
+        {text}
+        <meshStandardMaterial 
+          color={color} 
+          metalness={0.5} 
+          roughness={0.2}
+          emissive={color}
+          emissiveIntensity={hovered ? 0.5 : 0}
+        />
+      </Text3D>
+    </animated.group>
+  );
+};
 
 export function App(scene) {
   const [isLoading, setIsLoading] = useState(true);
@@ -51,10 +99,11 @@ export function App(scene) {
         await Promise.all([
           useGLTF.preload("./models/wodorowy_hub.glb"),
           useGLTF.preload("./models/wodorowy_tir.glb"),
-          useGLTF.preload("./models/dolar_sign.glb"),
+          useGLTF.preload("./models/euro.glb"),
           useGLTF.preload("./models/Technologie.glb"),
           useGLTF.preload("./models/Auta.glb"),
           useGLTF.preload("./models/Hala.glb"),
+          useGLTF.preload("./models/Fotowolt.glb"),
         ]);
         setTimeout(() => {
           setAssetsLoaded(true);
@@ -95,6 +144,7 @@ export function App(scene) {
 
   return (
     <div style={appStyles}>
+      <Leva hidden={false} />
       {!assetsLoaded && <CustomLoader />}
       <Canvas
         shadows
@@ -111,7 +161,8 @@ export function App(scene) {
           display: 'block'
         }}
         dpr={[1, 2]}
-      >
+        >
+        <OrbitControls/>
         <Suspense fallback={<SimpleLoader />}>
           {isDev && <Perf position="top-left" />}
           <Environment
@@ -120,7 +171,6 @@ export function App(scene) {
             backgroundIntensity={0.7}
             resolution={256}
           />
-          <Leva hidden={true} />
           <Float
             speed={1.1}
             floatIntensity={1.1}
@@ -150,14 +200,15 @@ export function App(scene) {
                   <Text3D />
                 </Suspense>
                 <ModelWithClick url="https://teamid.f.pl/finansowanie">
-                  <Dolar externalHover={secondLogoHovered} />
+                  <Euro externalHover={secondLogoHovered} />
                 </ModelWithClick>
                 <WindMil
                   onClick={() => window.open("https://hubid.org/", '_blank', 'noopener,noreferrer')}
                   onPointerOver={() => { document.body.style.cursor = 'pointer' }}
                   onPointerOut={() => { document.body.style.cursor = 'auto' }}
                 />
-                <ModelWithClick url="https://teamid.f.pl/finansowanie">
+                <Fotowolt />
+                <ModelWithClick url="https://teamid.f.pl/technologie">
                   <Technologies externalHover={secondLogoHovered} />
                 </ModelWithClick>
                 <ModelWithClick url="https://teamid.f.pl/technologie">
@@ -271,51 +322,17 @@ export function App(scene) {
                 {finishedLogos && finishedLogos.length > 0 && finishedLogos.map((item, i) => {
                   if (!item || !item.textOffset) return null;
                   return (
-                    <Text
+                    <Label3D
                       key={i}
-                      fontSize={item.textFontSize || 0.16}
-                      color={item.textColor || '#ffffff'}
-                      font="https://fonts.gstatic.com/s/roboto/v18/KFOmCnqEu92Fr1Mu4mxM.woff"
+                      text={item.label}
                       position={[
                         (item.x + (item.textOffset[0] || 0)),
                         (item.y + (item.textOffset[1] || 0)),
                         (item.z + (item.textOffset[2] || 0))
                       ]}
                       rotation={item.textRotation || [0, 0, 0]}
-                      onPointerOver={(e) => {
-                        gsap.to(e.object.scale, { duration: 0.3, x: 1.3, y: 1.3, z: 1.3 });
-                        document.body.style.cursor = 'pointer';
-                        if (item.label === "Programy") {
-                          setHubHovered(true);
-                          setFirstLogoHovered(true);
-                        } else if (item.label === "Finansowanie") {
-                          setSecondLogoHovered(true);
-                        } else if (item.label === "Technologie") {
-                          setThirdLogoHovered(true);
-                        } else if (item.label === "Green Hub PL") {
-                          setFourthLogoHovered(true);
-                        }
-                      }}
-                      onPointerOut={(e) => {
-                        gsap.to(e.object.scale, { duration: 0.3, x: 1, y: 1, z: 1 });
-                        document.body.style.cursor = 'auto';
-                        if (item.label === "Programy") {
-                          setHubHovered(false);
-                          setFirstLogoHovered(false);
-                        } else if (item.label === "Finansowanie") {
-                          setSecondLogoHovered(false);
-                        } else if (item.label === "Technologie") {
-                          setThirdLogoHovered(false);
-                        } else if (item.label === "Green Hub PL") {
-                          setFourthLogoHovered(false);
-                        }
-                      }}
-                      onClick={() => item.link && window.open(item.link, '_blank', 'noopener,noreferrer')}
-                      anchorX="center"
-                      anchorY="middle"
-                    >
-                      {item.label || ''}
-                    </Text>
+                      color={item.textColor || '#ffffff'}
+                    />
                   );
                 })}
               </Float>
