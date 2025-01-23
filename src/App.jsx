@@ -1,21 +1,15 @@
-import { useState, Suspense, memo, useEffect, useCallback } from 'react';
+import { useState, Suspense, useEffect, useCallback } from 'react';
 import { Canvas } from '@react-three/fiber';
 import {
   Environment,
   Float,
-  OrbitControls,
   PresentationControls,
   Text,
-  useProgress,
-  Html,
   useGLTF,
 } from '@react-three/drei';
-
 import { Logo } from './models3D/Logo';
-// import { CarbonText } from './models3D/CarbonText';
 import { Dolar } from './models3D/Dolar';
 import { WindMil } from './models3D/WindMil';
-
 import { Technologies } from './models3D/Technologies';
 import { Auta } from './models3D/Auta';
 import { Hala } from './models3D/Hala';
@@ -25,32 +19,14 @@ import { Leva } from 'leva';
 import { Particles } from './models3D/Particles';
 import Lights from './Lights';
 import { gsap } from 'gsap';
-
 import { Perf } from 'r3f-perf';
 import { Text3D } from './models3D/Text3D';
-import { CustomLoader } from './components/Loader';
-
+import { CustomLoader, SimpleLoader } from './components/Loader';
+import { ModelWithClick } from './components/ModelWithClick';
+import { OrientationMessage } from './components/OrientationMessage';
+import { appStyles } from './components/styles';
 
 const isDev = process.env.NODE_ENV === 'development';
-
-// Add a loading component
-function Loader() {
-  const { progress } = useProgress();
-  return <Html center>{progress.toFixed(0)} % loaded</Html>;
-}
-
-// Add onClick handlers to the models by wrapping them in groups that can handle pointer events
-const ModelWithClick = memo(({ children, url }) => {
-  return (
-    <group 
-      onClick={() => window.open(url, '_blank', 'noopener,noreferrer')}
-      onPointerOver={() => { document.body.style.cursor = 'pointer' }}
-      onPointerOut={() => { document.body.style.cursor = 'auto' }}
-    >
-      {children}
-    </group>
-  );
-});
 
 export function App(scene) {
   const [isLoading, setIsLoading] = useState(true);
@@ -61,13 +37,14 @@ export function App(scene) {
   const [secondLogoHovered, setSecondLogoHovered] = useState(false);
   const [thirdLogoHovered, setThirdLogoHovered] = useState(false);
   const [fourthLogoHovered, setFourthLogoHovered] = useState(false);
-  
+  const [isPortrait, setIsPortrait] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
   const handleLogoFinished = useCallback((data) => {
     if (!data) return;
     setFinishedLogos(prev => [...prev, data]);
   }, []);
-  
-  // Preload assets
+
   useEffect(() => {
     const loadAssets = async () => {
       try {
@@ -79,7 +56,6 @@ export function App(scene) {
           useGLTF.preload("./models/Auta.glb"),
           useGLTF.preload("./models/Hala.glb"),
         ]);
-        // Add artificial delay to ensure minimum loading time
         setTimeout(() => {
           setAssetsLoaded(true);
         }, 1500);
@@ -91,37 +67,60 @@ export function App(scene) {
         }, 2000);
       }
     };
-
     loadAssets();
   }, []);
 
+  useEffect(() => {
+    const checkOrientation = () => {
+      const aspectRatio = window.innerWidth / window.innerHeight;
+      const isWrongAspectRatio = aspectRatio < 1.5; // 3/2 = 1.5
+      setIsPortrait(isWrongAspectRatio);
+      const isMobileDevice = window.innerWidth < 1024;
+      setIsMobile(isMobileDevice);
+    };
+
+    checkOrientation();
+    window.addEventListener('resize', checkOrientation);
+    window.addEventListener('orientationchange', checkOrientation);
+
+    return () => {
+      window.removeEventListener('resize', checkOrientation);
+      window.removeEventListener('orientationchange', checkOrientation);
+    };
+  }, []);
+
+  if (isPortrait) {
+    return <OrientationMessage />;
+  }
+
   return (
-    <>
+    <div style={appStyles}>
       {!assetsLoaded && <CustomLoader />}
       <Canvas
         shadows
-        gl={{ 
+        gl={{
           antialias: true,
           alpha: true,
           powerPreference: "high-performance"
         }}
         camera={{ position: [0, 0.5, 6], far: 50 }}
-        style={{ background: '#000000' }}
+        style={{ 
+          background: '#000000',
+          width: '100%',
+          height: '100%',
+          display: 'block'
+        }}
         dpr={[1, 2]}
       >
-        <Suspense fallback={<Loader />}>
-          
-          {/* Panel wydajności */}
+        <Suspense fallback={<SimpleLoader />}>
           {isDev && <Perf position="top-left" />}
-          
-          {/* Environment z wyłączonym tłem */}
           <Environment
             preset="night"
             backgroundBlurriness={0.5}
             backgroundIntensity={0.7}
             resolution={256}
           />
-          <Leva hidden={true}/>
+          <Leva hidden={true} />
           <Float
             speed={1.1}
             floatIntensity={1.1}
@@ -131,7 +130,6 @@ export function App(scene) {
             <Suspense fallback={null}>
               <Particles count={1000} />
             </Suspense>
-            {/* Kontrolery i elementy */}
             <PresentationControls
               global
               position={[0, -0.5, 0]}
@@ -142,24 +140,19 @@ export function App(scene) {
               snap={{ mass: 3, tension: 200 }}
               touch-action="auto"
             >
-              {/* <OrbitControls makeDefault/> */}
               <Float
                 speed={1.1}
                 floatIntensity={1.1}
                 floatingRange={[-0.3, 0.3]}
                 rotationIntensity={0.1}
               >
-                {/* <OrbitControls makeDefault /> */}
-                
-                {/* Twoje modele */}
-                {/* <CarbonText /> */}
                 <Suspense fallback={null}>
                   <Text3D />
                 </Suspense>
                 <ModelWithClick url="https://teamid.f.pl/finansowanie">
                   <Dolar externalHover={secondLogoHovered} />
                 </ModelWithClick>
-                <WindMil 
+                <WindMil
                   onClick={() => window.open("https://hubid.org/", '_blank', 'noopener,noreferrer')}
                   onPointerOver={() => { document.body.style.cursor = 'pointer' }}
                   onPointerOut={() => { document.body.style.cursor = 'auto' }}
@@ -176,8 +169,8 @@ export function App(scene) {
                 <ModelWithClick url="https://teamid.f.pl/technologie">
                   <HydrogenHub externalHover={firstLogoHovered} />
                 </ModelWithClick>
-                <HydrogenTruck 
-                  castShadow 
+                <HydrogenTruck
+                  castShadow
                   position={[0, hubHovered ? 0.5 : 0, 0]}
                   externalHover={thirdLogoHovered}
                 />
@@ -275,10 +268,8 @@ export function App(scene) {
                   onPointerLeave={() => setFourthLogoHovered(false)}
                 />
 
-                {/* Animowane logotypy po zakończeniu */}
                 {finishedLogos && finishedLogos.length > 0 && finishedLogos.map((item, i) => {
                   if (!item || !item.textOffset) return null;
-                  
                   return (
                     <Text
                       key={i}
@@ -332,9 +323,7 @@ export function App(scene) {
           </Float>
         </Suspense>
       </Canvas>
-    </>
+    </div>
   );
 }
-
-
 

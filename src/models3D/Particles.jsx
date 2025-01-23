@@ -10,15 +10,15 @@ export function Particles({ count = 500, texturePath = '/textures/star_04.png'})
   // Ładowanie tekstury
   const texture = useLoader(THREE.TextureLoader, texturePath);
 
-  // Create particles with memoized attributes - adjusted distribution
+  // Create particles with memoized attributes
   const particles = useMemo(() => {
     const positions = new Float32Array(count * 3);
     for (let i = 0; i < count; i++) {
       positions.set(
         [
-          (Math.random() - 0.5) * 10, // x
-          (Math.random() - 0.5) * 10, // y
-          (Math.random() - 0.5) * 10, // z
+          (Math.random() - 0.5) * 10,
+          (Math.random() - 0.5) * 10,
+          (Math.random() - 0.5) * 10,
         ],
         i * 3
       );
@@ -32,11 +32,10 @@ export function Particles({ count = 500, texturePath = '/textures/star_04.png'})
     }
   });
 
-  // Adjusted default values for better visibility
   const { alphaTest, size, opacity } = useControls('Particles', {
-    alphaTest: { value:0.30, min: 0, max: 1, step: 0.01 },
+    alphaTest: { value: 0.30, min: 0, max: 1, step: 0.01 },
     size: { value: 0.25, min: 0.01, max: 1, step: 0.01 },
-    opacity: { value:0.79, min: 0, max: 1, step: 0.01 },
+    opacity: { value: 0.79, min: 0, max: 1, step: 0.01 },
   });
 
   return (
@@ -45,8 +44,8 @@ export function Particles({ count = 500, texturePath = '/textures/star_04.png'})
         <bufferAttribute
           attach="attributes-position"
           array={particles}
-          itemSize={4}
-          count={count}
+          itemSize={3}
+          count={particles.length / 3}
         />
       </bufferGeometry>
       <pointsMaterial
@@ -56,8 +55,11 @@ export function Particles({ count = 500, texturePath = '/textures/star_04.png'})
         size={size}
         sizeAttenuation={true}
         opacity={opacity}
-        depthWrite={false}  // Added to prevent z-fighting
-        blending={THREE.AdditiveBlending}  // Added for better visibility
+        depthWrite={false}
+        blending={THREE.AdditiveBlending}
+        vertexColors={false}
+        fog={true}
+        toneMapped={false}
       />
     </points>
   );
