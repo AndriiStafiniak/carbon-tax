@@ -25,7 +25,7 @@ import { Leva } from 'leva';
 import { Particles } from './models3D/Particles';
 import Lights from './Lights';
 import { gsap } from 'gsap';
-import { River } from './models3D/River';
+
 import { Perf } from 'r3f-perf';
 import { Text3D } from './models3D/Text3D';
 import { CustomLoader } from './components/Loader';
@@ -38,6 +38,19 @@ function Loader() {
   const { progress } = useProgress();
   return <Html center>{progress.toFixed(0)} % loaded</Html>;
 }
+
+// Add onClick handlers to the models by wrapping them in groups that can handle pointer events
+const ModelWithClick = memo(({ children, url }) => {
+  return (
+    <group 
+      onClick={() => window.open(url, '_blank', 'noopener,noreferrer')}
+      onPointerOver={() => { document.body.style.cursor = 'pointer' }}
+      onPointerOut={() => { document.body.style.cursor = 'auto' }}
+    >
+      {children}
+    </group>
+  );
+});
 
 export function App(scene) {
   const [isLoading, setIsLoading] = useState(true);
@@ -143,12 +156,26 @@ export function App(scene) {
                 <Suspense fallback={null}>
                   <Text3D />
                 </Suspense>
-                <Dolar externalHover={secondLogoHovered} />
-                <WindMil />
-                <Technologies externalHover={secondLogoHovered} />
-                <Auta externalHover={thirdLogoHovered} />
-                <Hala externalHover={fourthLogoHovered} />
-                <HydrogenHub externalHover={firstLogoHovered} />
+                <ModelWithClick url="https://teamid.f.pl/finansowanie">
+                  <Dolar externalHover={secondLogoHovered} />
+                </ModelWithClick>
+                <WindMil 
+                  onClick={() => window.open("https://hubid.org/", '_blank', 'noopener,noreferrer')}
+                  onPointerOver={() => { document.body.style.cursor = 'pointer' }}
+                  onPointerOut={() => { document.body.style.cursor = 'auto' }}
+                />
+                <ModelWithClick url="https://teamid.f.pl/finansowanie">
+                  <Technologies externalHover={secondLogoHovered} />
+                </ModelWithClick>
+                <ModelWithClick url="https://teamid.f.pl/technologie">
+                  <Auta externalHover={thirdLogoHovered} />
+                </ModelWithClick>
+                <ModelWithClick url="https://hubid.org/">
+                  <Hala externalHover={fourthLogoHovered} />
+                </ModelWithClick>
+                <ModelWithClick url="https://teamid.f.pl/technologie">
+                  <HydrogenHub externalHover={firstLogoHovered} />
+                </ModelWithClick>
                 <HydrogenTruck 
                   castShadow 
                   position={[0, hubHovered ? 0.5 : 0, 0]}
@@ -185,6 +212,7 @@ export function App(scene) {
                   }}
                 />
                 <Logo
+                  onClick={() => window.open("https://teamid.f.pl/finansowanie", '_blank', 'noopener,noreferrer')}
                   reciveShadow
                   color="#f8b643"
                   scale={8}
@@ -205,6 +233,7 @@ export function App(scene) {
                   onPointerLeave={() => setSecondLogoHovered(false)}
                 />
                 <Logo
+                  onClick={() => window.open("https://teamid.f.pl/technologie", '_blank', 'noopener,noreferrer')}
                   reciveShadow
                   color="#2792d0"
                   scale={8}
@@ -225,6 +254,7 @@ export function App(scene) {
                   onPointerLeave={() => setThirdLogoHovered(false)}
                 />
                 <Logo
+                  onClick={() => window.open("https://hubid.org/", '_blank', 'noopener,noreferrer')}
                   reciveShadow
                   color="#0f9748"
                   scale={8}

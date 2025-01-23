@@ -18,11 +18,16 @@ export function Dolar({ externalHover = false }) {
     }, []);
 
     useEffect(() => {
-        scene.traverse((child) => {
-            if (child.isMesh) {
-                child.material.color = new THREE.Color("#0f9748")
+        scene.traverse((obj) => {
+            if (obj.isMesh) {
+                obj.material.color = new THREE.Color("#0f9748");
+                obj.material.transparent = false;
+                obj.material.opacity = 1;
+                obj.material.needsUpdate = true;
+                obj.castShadow = true;
+                obj.receiveShadow = true;
             }
-        })
+        });
     }, [scene]);
 
     const { scale, position, rotation } = useSpring({
@@ -44,13 +49,13 @@ export function Dolar({ externalHover = false }) {
         if(modelRef.current){
             modelRef.current.rotation.y += delta * 0.5;
         }
-    })
+    });
 
     return (
-        <animated.primitive 
-            ref={modelRef} 
-            visible={isVisible} 
-            object={scene} 
+        <animated.primitive
+            ref={modelRef}
+            visible={isVisible}
+            object={scene}
             scale={scale}
             position={position}
             rotation={rotation}

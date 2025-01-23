@@ -17,7 +17,7 @@ export function Auta({ externalHover = false }) {
         positionZ: { value: 2.08, min: -5, max: 5, step: 0.001 },
         rotationY: { value: 0, min: 0, max: Math.PI * 2, step: 0.01 },
     });
-    console.log(animations);
+    
     const action = animation.actions["Car.Low.003Action"];
     useEffect(() => {
         if (action) {

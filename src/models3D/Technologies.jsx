@@ -1,6 +1,6 @@
 import { useGLTF } from "@react-three/drei";
 import { useEffect, useRef, useState } from "react";
-import {useControls} from "leva";
+import { useControls } from "leva";
 import { useSpring, animated } from "@react-spring/three";
 
 export function Technologies({ externalHover = false }) {
@@ -17,9 +17,21 @@ export function Technologies({ externalHover = false }) {
         return () => clearTimeout(timer);
     }, []);
 
+    useEffect(() => {
+        scene.traverse((obj) => {
+            if (obj.isMesh) {
+                obj.material.transparent = false;
+                obj.material.opacity = 1;
+                obj.material.needsUpdate = true;
+                obj.castShadow = true;
+                obj.receiveShadow = true;
+            }
+        });
+    }, [scene]);
+
     // Kontrolki Leva
     const { positionX, positionY, positionZ, rotationY } = useControls("Technologies", {
-        positionX: { value:-0.6, min: -5, max: 5, step: 0.1 },
+        positionX: { value: -0.6, min: -5, max: 5, step: 0.1 },
         positionY: { value: -0.5, min: -5, max: 5, step: 0.1 },
         positionZ: { value: 2.1, min: -5, max: 5, step: 0.1 },
         rotationY: { value: 2.2, min: 0, max: Math.PI * 2, step: 0.1 },
@@ -42,7 +54,6 @@ export function Technologies({ externalHover = false }) {
 
     return (
         <animated.primitive
-            castShadow
             ref={modelRef}
             visible={isVisible}
             object={scene}
