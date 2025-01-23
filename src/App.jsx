@@ -28,53 +28,8 @@ import { OrientationMessage } from './components/OrientationMessage';
 import { appStyles } from './components/styles';
 import { Euro } from './models3D/Euro';
 import { Fotowolt } from './models3D/Fotowolt';
-import { useSpring, animated } from '@react-spring/three';
 
 const isDev = process.env.NODE_ENV === 'development';
-
-// Możemy stworzyć komponent dla spójnego stylowania napisów
-const Label3D = ({ text, position, rotation = [0, 0, 0], color = "#ffffff" }) => {
-  const [hovered, setHovered] = useState(false);
-  const { scale } = useSpring({
-    scale: hovered ? 1.2 : 1,
-    config: { tension: 300, friction: 10 }
-  });
-
-  return (
-    <animated.group scale={scale}>
-      <Text3D
-        font="/fonts/Roboto_Regular.json"
-        size={0.2}
-        height={0.05}
-        curveSegments={12}
-        bevelEnabled
-        bevelThickness={0.01}
-        bevelSize={0.001}
-        bevelOffset={0}
-        bevelSegments={5}
-        position={position}
-        rotation={rotation}
-        onPointerOver={() => {
-          setHovered(true);
-          document.body.style.cursor = 'pointer';
-        }}
-        onPointerOut={() => {
-          setHovered(false);
-          document.body.style.cursor = 'auto';
-        }}
-      >
-        {text}
-        <meshStandardMaterial 
-          color={color} 
-          metalness={0.5} 
-          roughness={0.2}
-          emissive={color}
-          emissiveIntensity={hovered ? 0.5 : 0}
-        />
-      </Text3D>
-    </animated.group>
-  );
-};
 
 export function App(scene) {
   const [isLoading, setIsLoading] = useState(true);
@@ -322,17 +277,51 @@ export function App(scene) {
                 {finishedLogos && finishedLogos.length > 0 && finishedLogos.map((item, i) => {
                   if (!item || !item.textOffset) return null;
                   return (
-                    <Label3D
+                    <Text
                       key={i}
-                      text={item.label}
+                      fontSize={item.textFontSize || 0.16}
+                      color={item.textColor || '#ffffff'}
+                      font="https://fonts.gstatic.com/s/roboto/v18/KFOmCnqEu92Fr1Mu4mxM.woff"
                       position={[
                         (item.x + (item.textOffset[0] || 0)),
                         (item.y + (item.textOffset[1] || 0)),
                         (item.z + (item.textOffset[2] || 0))
                       ]}
                       rotation={item.textRotation || [0, 0, 0]}
-                      color={item.textColor || '#ffffff'}
-                    />
+                      onPointerOver={(e) => {
+                        gsap.to(e.object.scale, { duration: 0.3, x: 1.3, y: 1.3, z: 1.3 });
+                        document.body.style.cursor = 'pointer';
+                        if (item.label === "Programy") {
+                          setHubHovered(true);
+                          setFirstLogoHovered(true);
+                        } else if (item.label === "Finansowanie") {
+                          setSecondLogoHovered(true);
+                        } else if (item.label === "Technologie") {
+                          setThirdLogoHovered(true);
+                        } else if (item.label === "Green Hub PL") {
+                          setFourthLogoHovered(true);
+                        }
+                      }}
+                      onPointerOut={(e) => {
+                        gsap.to(e.object.scale, { duration: 0.3, x: 1, y: 1, z: 1 });
+                        document.body.style.cursor = 'auto';
+                        if (item.label === "Programy") {
+                          setHubHovered(false);
+                          setFirstLogoHovered(false);
+                        } else if (item.label === "Finansowanie") {
+                          setSecondLogoHovered(false);
+                        } else if (item.label === "Technologie") {
+                          setThirdLogoHovered(false);
+                        } else if (item.label === "Green Hub PL") {
+                          setFourthLogoHovered(false);
+                        }
+                      }}
+                      onClick={() => item.link && window.open(item.link, '_blank', 'noopener,noreferrer')}
+                      anchorX="center"
+                      anchorY="middle"
+                    >
+                      {item.label || ''}
+                    </Text>
                   );
                 })}
               </Float>
