@@ -12,7 +12,7 @@ export function Auta({ externalHover = false }) {
 
     // Kontrolki Leva - Move this before spring animation
     const { positionX, positionY, positionZ, rotationY } = useControls("Auta",{
-        positionX: { value: 0.44, min: -5, max: 5, step: 0.001},
+        positionX: { value: 0.59, min: -5, max: 5, step: 0.001},
         positionY: { value: -0.515, min: -5, max: 5, step: 0.001},
         positionZ: { value: 2.08, min: -5, max: 5, step: 0.001 },
         rotationY: { value: 0, min: 0, max: Math.PI * 2, step: 0.01 },
@@ -60,7 +60,7 @@ export function Auta({ externalHover = false }) {
 
     // Animations with react-spring
     const { scale, position, rotation } = useSpring({
-        scale: isVisible ? 0.2 : 0,
+        scale: isVisible ? 0.3 : 0,
         position: [
             positionX,
             (isHovered || externalHover) ? positionY + 0.2 : positionY,

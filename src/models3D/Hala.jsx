@@ -12,7 +12,7 @@ export function Hala({ externalHover = false }) {
     // Kontrolki Leva - Move this before spring animation
     const { positionX, positionY, positionZ, rotationY } = useControls("Hala", {
         positionX: { value: 2.8, min: -5, max: 5, step: 0.1 },
-        positionY: { value:-0.40, min: -5, max: 5, step: 0.01 },
+        positionY: { value:-0.48, min: -5, max: 5, step: 0.01 },
         positionZ: { value: 2.0, min: -5, max: 5, step: 0.1 },
         rotationY: { value: 0, min: 0, max: Math.PI * 2, step: 0.1 },
     });
@@ -38,7 +38,7 @@ export function Hala({ externalHover = false }) {
     }, [scene]);
 
     const { scale, position, rotation } = useSpring({
-        scale: isVisible ? 0.30 : 0,
+        scale: isVisible ? 0.37 : 0,
         position: [
             positionX,
             (isHovered || externalHover) ? positionY + 0.2 : positionY,

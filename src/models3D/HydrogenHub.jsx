@@ -11,8 +11,8 @@ export function HydrogenHub({ externalHover = false }) {
 
     // Kontrolki Leva - Move this before the spring animation
     const { positionX, positionY, positionZ, rotationY } = useControls("Wodorowy Hub", {
-        positionX: { value: -2.6, min: -5, max: 5, step: 0.01 },
-        positionY: { value:-0.37, min: -5, max: 5, step: 0.01 },
+        positionX: { value: -2.85, min: -5, max: 5, step: 0.01 },
+        positionY: { value:-0.42, min: -5, max: 5, step: 0.01 },
         positionZ: { value: 2.5, min: -5, max: 5, step: 0.01 },
         rotationY: { value: 0, min: 0, max: Math.PI * 2, step: 0.01 },
     });
@@ -49,7 +49,7 @@ export function HydrogenHub({ externalHover = false }) {
     }, [scene]);
 
     const { scale, position, rotation } = useSpring({
-        scale: isVisible ? 0.25 : 0,
+        scale: isVisible ? 0.35 : 0,
         position: [
             positionX,
             (isHovered || externalHover) ? positionY + 0.2 : positionY,

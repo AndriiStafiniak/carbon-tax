@@ -9,7 +9,7 @@ export function Fotowolt() {
     const [isVisible, setIsVisible] = useState(false);
     const modelRef = useRef();
     const animation = useAnimations(animations, scene);
-console.log(scene)
+
     // Kontrolki Leva
     const { positionX, positionY, positionZ, rotationY, scaleValue } = useControls("Fotowolt", {
         positionX: { value: 2.96, min: -1, max: 4, step: 0.001 },

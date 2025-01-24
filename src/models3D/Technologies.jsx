@@ -38,7 +38,7 @@ export function Technologies({ externalHover = false }) {
     });
 
     const { scale, position, rotation } = useSpring({
-        scale: isVisible ? 0.3 : 0,
+        scale: isVisible ? 0.34 : 0,
         position: [
             positionX,
             (isHovered || externalHover) ? positionY + 0.2 : positionY,

@@ -20,7 +20,7 @@ export const OrientationMessage = () => (
   }}>
     <RotatingPhone />
     <div style={{ fontSize: '24px', marginBottom: '20px', padding: '20px', }}>
-      Proszę dostosować proporcje ekranu
+      Proszę obrócić ekran
     </div>
     <div style={{ fontSize: '16px', width: '90%', padding: '20px' }}>
       Dla lepszego doświadczenia, zalecamy korzystanie z aplikacji w proporcji szerokości do wysokości minimum 3:2.

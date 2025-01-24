@@ -8,7 +8,7 @@ import {
   Text,
   useGLTF,
 } from '@react-three/drei';
-import { Logo } from './models3D/Logo';
+import { Logo } from './texts/Logo';
 
 import { WindMil } from './models3D/WindMil';
 import { Technologies } from './models3D/Technologies';
@@ -28,6 +28,11 @@ import { OrientationMessage } from './components/OrientationMessage';
 import { appStyles } from './components/styles';
 import { Euro } from './models3D/Euro';
 import { Fotowolt } from './models3D/Fotowolt';
+import { ProgramyText } from './texts/ProgramyText';
+import { FinansowanieText } from './texts/FinansowanieText';
+import { TechnologieText } from './texts/TechnologieText';
+import { GreenHubText } from './texts/GreenHubText';
+
 
 const isDev = process.env.NODE_ENV === 'development';
 
@@ -59,6 +64,10 @@ export function App(scene) {
           useGLTF.preload("./models/Auta.glb"),
           useGLTF.preload("./models/Hala.glb"),
           useGLTF.preload("./models/Fotowolt.glb"),
+          useGLTF.preload("./models/txt/programy.glb"),
+          useGLTF.preload("./models/txt/finansowanie.glb"),
+          useGLTF.preload("./models/txt/technologie.glb"),
+          useGLTF.preload("./models/txt/greenhub.glb")
         ]);
         setTimeout(() => {
           setAssetsLoaded(true);
@@ -99,7 +108,24 @@ export function App(scene) {
 
   return (
     <div style={appStyles}>
-      <Leva hidden={false} />
+      <Leva 
+        hidden={true}
+        theme={{
+          sizes: {
+            rootWidth: '400px',
+            controlWidth: '70%',
+            numberInputMinWidth: '100px',
+          },
+          space: {
+            sm: '6px',
+            md: '10px',
+            lg: '15px',
+          },
+          fontSizes: {
+            root: '14px',
+          },
+        }}
+      />
       {!assetsLoaded && <CustomLoader />}
       <Canvas
         shadows
@@ -117,7 +143,7 @@ export function App(scene) {
         }}
         dpr={[1, 2]}
         >
-        <OrbitControls/>
+        {/* <OrbitControls/> */}
         <Suspense fallback={<SimpleLoader />}>
           {isDev && <Perf position="top-left" />}
           <Environment
@@ -145,12 +171,7 @@ export function App(scene) {
               snap={{ mass: 3, tension: 200 }}
               touch-action="auto"
             >
-              <Float
-                speed={1.1}
-                floatIntensity={1.1}
-                floatingRange={[-0.3, 0.3]}
-                rotationIntensity={0.1}
-              >
+              
                 <Suspense fallback={null}>
                   <Text3D />
                 </Suspense>
@@ -189,7 +210,7 @@ export function App(scene) {
                   color="#61bc48"
                   scale={8}
                   finalX={-2}
-                  finalY={-0.5}
+                  finalY={-0.6}
                   finalZ={1.5}
                   finalRotationZ={Math.PI * -0.5}
                   position={[0, 0, 0]}
@@ -197,10 +218,7 @@ export function App(scene) {
                   label="Programy"
                   link="https://teamid.f.pl/"
                   onAnimationFinish={handleLogoFinished}
-                  textColor="#ffffff"
-                  textFontSize={0.16}
-                  textRotation={[0, 0, 0]}
-                  textOffset={[-0.7, -0.2, 1.5]}
+                  
                   onPointerEnter={() => {
                     setHubHovered(true);
                     setFirstLogoHovered(true);
@@ -224,10 +242,7 @@ export function App(scene) {
                   label="Finansowanie"
                   link="https://teamid.f.pl/finansowanie"
                   onAnimationFinish={handleLogoFinished}
-                  textColor="#ffffff"
-                  textFontSize={0.16}
-                  textRotation={[0, 0, 0]}
-                  textOffset={[0.7, -0.3, 1.5]}
+               
                   onPointerEnter={() => setSecondLogoHovered(true)}
                   onPointerLeave={() => setSecondLogoHovered(false)}
                 />
@@ -245,10 +260,7 @@ export function App(scene) {
                   label="Technologie"
                   link="https://teamid.f.pl/technologie"
                   onAnimationFinish={handleLogoFinished}
-                  textColor="#ffffff"
-                  textFontSize={0.16}
-                  textRotation={[0, 0, 0]}
-                  textOffset={[-0.8, -0.3, 0]}
+                  
                   onPointerEnter={() => setThirdLogoHovered(true)}
                   onPointerLeave={() => setThirdLogoHovered(false)}
                 />
@@ -258,7 +270,7 @@ export function App(scene) {
                   color="#0f9748"
                   scale={8}
                   finalX={2}
-                  finalY={-0.5}
+                  finalY={-0.6}
                   finalZ={3}
                   finalRotationZ={Math.PI * 0.5}
                   position={[0, 0, 0]}
@@ -266,65 +278,14 @@ export function App(scene) {
                   label="Green Hub PL"
                   link="https://hubid.org/"
                   onAnimationFinish={handleLogoFinished}
-                  textColor="#ffffff"
-                  textFontSize={0.16}
-                  textRotation={[0, 0, 0]}
-                  textOffset={[0.5, -0.15, 0]}
+                 
                   onPointerEnter={() => setFourthLogoHovered(true)}
                   onPointerLeave={() => setFourthLogoHovered(false)}
                 />
-
-                {finishedLogos && finishedLogos.length > 0 && finishedLogos.map((item, i) => {
-                  if (!item || !item.textOffset) return null;
-                  return (
-                    <Text
-                      key={i}
-                      fontSize={item.textFontSize || 0.16}
-                      color={item.textColor || '#ffffff'}
-                      font="https://fonts.gstatic.com/s/roboto/v18/KFOmCnqEu92Fr1Mu4mxM.woff"
-                      position={[
-                        (item.x + (item.textOffset[0] || 0)),
-                        (item.y + (item.textOffset[1] || 0)),
-                        (item.z + (item.textOffset[2] || 0))
-                      ]}
-                      rotation={item.textRotation || [0, 0, 0]}
-                      onPointerOver={(e) => {
-                        gsap.to(e.object.scale, { duration: 0.3, x: 1.3, y: 1.3, z: 1.3 });
-                        document.body.style.cursor = 'pointer';
-                        if (item.label === "Programy") {
-                          setHubHovered(true);
-                          setFirstLogoHovered(true);
-                        } else if (item.label === "Finansowanie") {
-                          setSecondLogoHovered(true);
-                        } else if (item.label === "Technologie") {
-                          setThirdLogoHovered(true);
-                        } else if (item.label === "Green Hub PL") {
-                          setFourthLogoHovered(true);
-                        }
-                      }}
-                      onPointerOut={(e) => {
-                        gsap.to(e.object.scale, { duration: 0.3, x: 1, y: 1, z: 1 });
-                        document.body.style.cursor = 'auto';
-                        if (item.label === "Programy") {
-                          setHubHovered(false);
-                          setFirstLogoHovered(false);
-                        } else if (item.label === "Finansowanie") {
-                          setSecondLogoHovered(false);
-                        } else if (item.label === "Technologie") {
-                          setThirdLogoHovered(false);
-                        } else if (item.label === "Green Hub PL") {
-                          setFourthLogoHovered(false);
-                        }
-                      }}
-                      onClick={() => item.link && window.open(item.link, '_blank', 'noopener,noreferrer')}
-                      anchorX="center"
-                      anchorY="middle"
-                    >
-                      {item.label || ''}
-                    </Text>
-                  );
-                })}
-              </Float>
+                <ProgramyText color="#000000" />
+                <FinansowanieText />
+                <TechnologieText />
+                <GreenHubText />
             </PresentationControls>
           </Float>
         </Suspense>

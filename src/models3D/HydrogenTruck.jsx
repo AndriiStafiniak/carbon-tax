@@ -11,10 +11,10 @@ export function HydrogenTruck({ externalHover = false }) {
 
     // Leva controls - Move this before spring animation
     const { positionX, positionY, positionZ, rotationY } = useControls("HydrogenTruck",{
-        positionX: { value: 1.1, min: -5, max: 5, step: 0.001 },
+        positionX: { value: 1.25, min: -5, max: 5, step: 0.001 },
         positionY: { value: -0.527, min: -5, max: 5, step: 0.001},
-        positionZ: { value:2.1, min: -5, max: 5, step: 0.001 },
-        rotationY: { value: -0.5, min: -2, max: Math.PI * 2, step: 0.1 },
+        positionZ: { value: 2.1, min: -5, max: 5, step: 0.001 },
+        rotationY: { value: -1.7, min: -2, max: Math.PI * 2, step: 0.1 },
     });
 
     // Enable castShadow for all meshes in the model
@@ -40,7 +40,7 @@ export function HydrogenTruck({ externalHover = false }) {
 
     // Spring animation for scaling
     const { scale, position, rotation } = useSpring({
-        scale: isVisible ? 0.3 : 0,
+        scale: isVisible ? 0.27 : 0,
         position: [
             positionX,
             (isHovered || externalHover) ? positionY + 0.2 : positionY,
