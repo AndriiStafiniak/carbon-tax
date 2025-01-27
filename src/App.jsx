@@ -7,6 +7,7 @@ import {
   PresentationControls,
   Text,
   useGLTF,
+  Loader,
 } from '@react-three/drei';
 import { Logo } from './texts/Logo';
 
@@ -71,13 +72,13 @@ export function App(scene) {
         ]);
         setTimeout(() => {
           setAssetsLoaded(true);
-        }, 1500);
+        }, 2500);
       } catch (error) {
         console.error("Error loading assets:", error);
       } finally {
         setTimeout(() => {
           setIsLoading(false);
-        }, 2000);
+        }, 3000);
       }
     };
     loadAssets();
@@ -290,6 +291,7 @@ export function App(scene) {
           </Float>
         </Suspense>
       </Canvas>
+      <Loader />
     </div>
   );
 }

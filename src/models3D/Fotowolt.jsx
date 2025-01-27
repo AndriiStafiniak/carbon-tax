@@ -13,8 +13,8 @@ export function Fotowolt() {
     // Kontrolki Leva
     const { positionX, positionY, positionZ, rotationY, scaleValue } = useControls("Fotowolt", {
         positionX: { value: 2.96, min: -1, max: 4, step: 0.001 },
-        positionY: { value: -0.36, min: -1, max: 1, step: 0.001 },
-        positionZ: { value: 2.62, min: 0, max: 4, step: 0.001 },
+        positionY: { value: -0.43, min: -1, max: 1, step: 0.001 },
+        positionZ: { value: 2.55, min: 0, max: 4, step: 0.001 },
         rotationY: { value: 4.23, min: 0, max: Math.PI * 2, step: 0.001 },
         scaleValue: { value: 0.3, min: 0, max: 1, step: 0.001 }
     });

@@ -1,16 +1,17 @@
 import { useControls } from 'leva';
 import { useEffect, useState } from 'react';
 import { useSpring, animated } from '@react-spring/three';
-import { Text } from '@react-three/drei';
+import { Text3D } from '@react-three/drei';
 
 export function TechnologieText() {
     const [isVisible, setIsVisible] = useState(false);
+    const [isHovered, setIsHovered] = useState(false);
     
     const controls = useControls("Technologie Text", {
-        positionX: { value: 0.6, min: -5, max: 5, step: 0.1 },
-        positionY: { value: -0.585, min: -5, max: 5, step: 0.1 },
-        positionZ: { value: 2.89, min: -5, max: 5, step: 0.1 },
-        scale: { value: 0.16, min: 0, max: 1, step: 0.01 },
+        positionX: { value: 0.2, min: -5, max: 5, step: 0.1 },
+        positionY: { value: -0.625, min: -5, max: 5, step: 0.1 },
+        positionZ: { value: 2.94, min: -5, max: 5, step: 0.1 },
+        scale: { value: 0.22, min: 0, max: 1, step: 0.01 },
         rotationY: { value: 0.12, min: 0, max: Math.PI * 2, step: 0.01 }
     });
 
@@ -21,9 +22,10 @@ export function TechnologieText() {
         return () => clearTimeout(timer);
     }, []);
 
-    const { scale, rotation } = useSpring({
+    const { scale, rotation, color } = useSpring({
         scale: isVisible ? controls.scale : 0,
         rotation: [0, controls.rotationY, 0],
+        color: isHovered ? "black" : "white",
         config: { tension: 170, friction: 26 },
     });
 
@@ -33,15 +35,30 @@ export function TechnologieText() {
             scale={scale}
             rotation={rotation}
         >
-            <Text
-                font="/fonts/ubuntu-v20-latin-regular.woff"
-                fontSize={0.9}
-                color="white"
-                anchorX="center"
-                anchorY="middle"
+            {/* Niewidzialny box do interakcji */}
+            <mesh
+                onPointerOver={() => setIsHovered(true)}
+                onPointerOut={() => setIsHovered(false)}
+                position={[1.2, 0, 0]}
+            >
+                <boxGeometry args={[4.5, 1, 0.5]} />
+                <meshStandardMaterial visible={false} />
+            </mesh>
+            
+            <Text3D
+                font="/fonts/Ubuntu_Regular.json"
+                size={0.5}
+                height={0.1}
+                curveSegments={12}
+                bevelEnabled
+                bevelThickness={0.01}
+                bevelSize={0.001}
+                bevelOffset={0}
+                bevelSegments={5}
             >
                 Technologie
-            </Text>
+                <animated.meshStandardMaterial color={color} />
+            </Text3D>
         </animated.mesh>
     );
 } 
